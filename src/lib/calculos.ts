@@ -64,6 +64,24 @@ export function projecao(media: number, variacaoSem: number | null, alvo: number
 export const adere = (kcal: number, proteina: number, kcalMeta: number, proteinaMeta: number) =>
   Math.abs(kcal - kcalMeta) <= kcalMeta * 0.1 && proteina >= proteinaMeta * 0.9;
 
+/**
+ * TDEE adaptativo nos 28 dias que acabam em `ate`. Só com 14 ou mais dias completos.
+ * Média de kcal − (variação do peso médio × 7700 / dias). Perder peso dá um TDEE maior do que o que se comeu.
+ */
+export function tdeeAdaptativo(completos: { data: string; kcal: number }[], pesos: P[], ate: string) {
+  const de = somaDias(ate, -27);
+  const dias = completos.filter((d) => d.data >= de && d.data <= ate);
+  const faltam = Math.max(0, 14 - dias.length);
+  const fim = mediaMovel(pesos, ate);
+  const inicio = mediaMovel(pesos, somaDias(ate, -21)); // primeiros 7 dias do período
+  let tdee: number | null = null;
+  if (!faltam && fim != null && inicio != null) {
+    const kcal = dias.reduce((s, d) => s + d.kcal, 0) / dias.length;
+    tdee = kcal - ((fim - inicio) * 7700) / 21; // 21 dias entre os dois períodos de 7 dias
+  }
+  return { tdee, completos: dias.length, faltam, semPeso: fim == null || inicio == null };
+}
+
 export const ritmoAlto =(kgSem: number, peso: number) => Math.abs(kgSem) > peso * 0.01;
 
 /** Epley, só com 12 reps ou menos. */

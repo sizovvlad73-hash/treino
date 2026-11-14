@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CheckinDia from '../../componentes/CheckinDia.svelte';
   import FolhaRegisto from '../../componentes/FolhaRegisto.svelte';
   import Folha from '../../componentes/Folha.svelte';
   import Num from '../../componentes/Num.svelte';
@@ -7,7 +8,7 @@
   import { tendencia } from '../../lib/calculos';
   import { dadosDoDia } from '../../lib/comida';
   import { ativos, db, def } from '../../lib/db';
-  import { diaLocal, diaSemana, difDias, fmt, fmtDataLonga, fmtSinal, hoje } from '../../lib/formato';
+  import { diaLocal, diaSemana, difDias, fmt, fmtDataLonga, fmtSinal, hoje, inicioSemana } from '../../lib/formato';
   import { ir } from '../../lib/rota.svelte';
   import type { Perfil, Peso, Rotina } from '../../lib/tipos';
   import { vivo } from '../../lib/vivo.svelte';
@@ -17,8 +18,13 @@
   const rotinas = vivo(() => ativos(db.rotinas), []);
   const sessoes = vivo(() => ativos(db.sessoes), []);
   const info = vivo(
-    async () => ({ backup: await def<string | null>('ultimoBackup', null), perfil: await obterPerfil(), pronto: true }),
-    { backup: null as string | null, perfil: undefined as Perfil | undefined, pronto: false },
+    async () => ({
+      backup: await def<string | null>('ultimoBackup', null),
+      checkin: await def<string | null>('ultimoCheckin', null),
+      perfil: await obterPerfil(),
+      pronto: true,
+    }),
+    { backup: null as string | null, checkin: null as string | null, perfil: undefined as Perfil | undefined, pronto: false },
   );
 
   const comida = vivo(() => dadosDoDia(dia), undefined);
@@ -32,6 +38,11 @@
   const diasBackup = $derived(info.v.backup ? difDias(diaLocal(new Date(info.v.backup)), dia) : null);
   const backupAntigo = $derived(
     info.v.pronto && (diasBackup == null ? pesos.v.length + sessoes.v.length > 0 : diasBackup > 7),
+  );
+
+  // Check-in semanal: fica pendente desde segunda até ser feito (só quando já há pesos).
+  const checkinPendente = $derived(
+    info.v.pronto && pesos.v.length > 0 && (info.v.checkin ?? '') < inicioSemana(dia),
   );
 
   let kg = $state<number | null>(null);
@@ -70,6 +81,12 @@
   <a class="cartao aviso" href="#/mais/backup">
     <b>{diasBackup == null ? 'Ainda não fizeste um backup ›' : `Último backup há ${diasBackup} dias ›`}</b>
     <p class="sub">Os dados só existem neste aparelho. Exporta um backup.</p>
+  </a>
+{/if}
+{#if checkinPendente}
+  <a class="cartao aviso" href="#/mais/checkin">
+    <b>Check-in semanal por fazer ›</b>
+    <p class="sub">Vê a tendência do peso e o TDEE adaptativo, e revê as metas.</p>
   </a>
 {/if}
 
@@ -147,6 +164,8 @@
     {/if}
   </section>
 </div>
+
+<CheckinDia data={dia} />
 
 <button class="btn pri largo gr" onclick={() => (menu = true)}>+ Registar</button>
 

@@ -6,6 +6,7 @@ export interface Base {
   criadoEm: string; // instante ISO
   atualizadoEm: string;
   apagado: Bit;
+  exemplo?: 1; // dado de exemplo: não entra no backup e apaga-se em Mais
 }
 
 export const GRUPOS = {
@@ -142,6 +143,15 @@ export interface Dia extends Base {
   fome: number | null;
   nota: string;
   completo: Bit;
+  // Atividade e recuperação (Fase 3), tudo opcional.
+  passos?: number | null;
+  sonoH?: number | null;
+  energia?: number | null; // 1–5
+  kcalAtivas?: number | null; // só informativas
+  sonoQualidade?: number | null; // 1–5
+  hrv?: number | null;
+  fcRepouso?: number | null;
+  stress?: number | null; // 1–5
 }
 
 export interface Alimento extends Base {

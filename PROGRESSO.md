@@ -30,6 +30,19 @@
 Verificado: `npm run check` e `npm run build` sem erros. No browser: sessão de treino, séries, descanso, histórico, peso; diário com alimento em gramas, em unidades e entrada rápida; totais; Hoje com comida; restauro de backup (versões 1 e 2) e recusa de um ficheiro errado.
 Não verificado: instalação no iPhone, modo offline, som e ecrã ligado num iPhone real, importação de CSV, pesquisa no Open Food Facts.
 
+## Fase 3 — feita (14/11/2026)
+
+- Esquema na versão 3: campos de atividade opcionais em `dias` (`passos`, `sonoH`, `energia`, `kcalAtivas`, `sonoQualidade`, `hrv`, `fcRepouso`, `stress`) e marca opcional `exemplo` em todos os registos. Sem índices novos; os backups das versões 1 e 2 continuam a restaurar.
+- Hoje: cartão «Check-in» (passos, sono, energia; o resto atrás de «Mais») e aviso «Check-in semanal por fazer».
+- TDEE adaptativo em `calculos.ts` (`tdeeAdaptativo`). Antes dos 14 dias completos mostra «faltam N dias completos».
+- Mais › Resumo semanal: semanas de segunda a domingo, com setas para as anteriores. O que falta aparece como «—» e não entra nas médias.
+- Mais › Check-in semanal: tendência do peso e TDEE adaptativo até domingo; se a diferença para o `tdeeUsado` passar 150 kcal, propõe metas. Aceitar ou recusar fica no histórico das metas com origem «check-in».
+- Mais › Exportar para o Claude: texto Markdown, campo «A minha pergunta», contagem de palavras, botão «Copiar». Acima das 4000 palavras saem primeiro as sessões de treino mais antigas.
+- Mais › Dados de exemplo: carregar 30 dias (peso, comida, atividade, treinos, duas rotinas e, se não houver, uma meta) e apagar só os marcados. Não entram no backup.
+
+Verificado: `npm run check` e `npm run build` sem erros. No browser, com os dados de exemplo: conta do TDEE (2500 kcal e −0,5 kg/semana dá 3050), check-in diário, resumo com semanas vazias, check-in semanal com recusa no histórico, texto para o Claude e o seu encurtamento, apagar exemplo (só os marcados), validação de backups das versões 1 e 2 e recusa de uma versão 4.
+Não verificado: o botão «Copiar» num iPhone; restauro completo de um ficheiro de backup real da versão 2; exportar um backup com dados de exemplo carregados (o filtro está no código, mas não descarreguei o ficheiro).
+
 ## Publicação (14/11/2026)
 
 - Endereço: https://sizovvlad73-hash.github.io/treino/ (GitHub Pages, repositório público `sizovvlad73-hash/treino`).
@@ -55,10 +68,15 @@ Não verificado: instalação no iPhone, modo offline, som e ecrã ligado num iP
 - Apagar um alimento não altera os dias já registados (os valores continuam a ser calculados).
 - A entrada rápida fica, por omissão, na primeira refeição da lista; muda-se na folha.
 - A lista de refeições fica em `definicoes.refeicoes`.
+- TDEE adaptativo: período de 28 dias; compara a média de peso dos últimos 7 dias com a dos primeiros 7 e divide por 21 dias.
+- Kcal, proteína, sal e adesão da semana: só dias completos. Passos, sono e energia: só dias com valor. Peso médio da semana: média dos pesos dessa semana. Cintura: a última medida dessa semana.
+- Treinos planeados por semana = soma dos dias marcados em todas as rotinas.
+- Check-in semanal: fica pendente desde segunda até ser feito (`definicoes.ultimoCheckin` guarda a segunda-feira); usa os dados até domingo. A proposta soma a diferença de TDEE às kcal de treino e de descanso (arredondadas a 10) e mantém a proteína e o défice.
+- Apagar dados de exemplo remove mesmo os registos (não os marca como apagados). Dias que já tenham dados reais não recebem exemplo.
+- No texto para o Claude, kcal com `*` é um dia não completo, e as semanas sem dados não aparecem.
 
 ## Falta
 
 - **Instalar no iPhone e testar lá** (a app já está publicada, ver abaixo).
-- **Fase 3:** Atividade, resumo semanal, TDEE adaptativo, check-in semanal, exportar para o Claude. A tabela `dias` vai receber os campos de atividade.
 - **Fase 4:** medidas mensais, % de gordura (com TMB Katch-McArdle, já em `calculos.ts`), fotos, backup de fotos, polimento offline e instalação no iPhone.
 - **Para depois:** importar do Apple Health por Atalho; leitura do código de barras com a câmara.

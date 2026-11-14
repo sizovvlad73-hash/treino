@@ -17,7 +17,7 @@ import type {
   Sessao,
 } from './tipos';
 
-export const VERSAO_ESQUEMA = 2;
+export const VERSAO_ESQUEMA = 3;
 
 class BD extends Dexie {
   perfil!: Table<Perfil, string>;
@@ -54,6 +54,8 @@ class BD extends Dexie {
       diario: 'id, apagado, data, alimentoId',
       modelos: 'id, apagado',
     });
+    // Fase 3: campos de atividade em `dias` e marca `exemplo` (sem índices novos).
+    this.version(3).stores({});
   }
 }
 
@@ -61,7 +63,7 @@ export const db = new BD();
 
 const agora = () => new Date().toISOString();
 
-function uuid(): string {
+export function uuid(): string {
   if (crypto.randomUUID) return crypto.randomUUID();
   // Fora de HTTPS (ex. teste na rede local) não há randomUUID.
   const b = crypto.getRandomValues(new Uint8Array(16));

@@ -16,7 +16,7 @@ export interface Backup {
 /** Exporta tudo para um ficheiro JSON. Devolve false se a partilha for cancelada. */
 export async function exportar(): Promise<boolean> {
   const tabelas: Backup['tabelas'] = {};
-  for (const t of TABELAS) tabelas[t] = await db.table(t).toArray();
+  for (const t of TABELAS) tabelas[t] = (await db.table(t).toArray()).filter((r) => !r.exemplo); // sem dados de exemplo
   const agora = new Date();
   const b: Backup = { app: 'treino', versaoEsquema: VERSAO_ESQUEMA, exportadoEm: agora.toISOString(), tabelas };
   const nome = `treino-backup-${hoje()}.json`;
