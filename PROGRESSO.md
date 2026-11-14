@@ -30,6 +30,13 @@
 Verificado: `npm run check` e `npm run build` sem erros. No browser: sessão de treino, séries, descanso, histórico, peso; diário com alimento em gramas, em unidades e entrada rápida; totais; Hoje com comida; restauro de backup (versões 1 e 2) e recusa de um ficheiro errado.
 Não verificado: instalação no iPhone, modo offline, som e ecrã ligado num iPhone real, importação de CSV, pesquisa no Open Food Facts.
 
+## Publicação (14/11/2026)
+
+- Endereço: https://sizovvlad73-hash.github.io/treino/ (GitHub Pages, repositório público `sizovvlad73-hash/treino`).
+- Cada `git push` para `main` compila e publica sozinho (`.github/workflows/publicar.yml`).
+- Verificado no endereço final: a app abre, o service worker fica ativo e o manifest e os ícones carregam.
+- No iPhone os dados ficam presos a este endereço; mudar de alojamento obriga a restaurar um backup.
+
 ## Decisões tomadas
 
 - Sim/não indexados guardados como 0/1. Dias (AAAA-MM-DD) sempre na hora local. Um só peso por dia.
@@ -51,7 +58,7 @@ Não verificado: instalação no iPhone, modo offline, som e ecrã ligado num iP
 
 ## Falta
 
-- **Publicar em HTTPS e instalar no iPhone** (falta escolher o alojamento).
+- **Instalar no iPhone e testar lá** (a app já está publicada, ver abaixo).
 - **Fase 3:** Atividade, resumo semanal, TDEE adaptativo, check-in semanal, exportar para o Claude. A tabela `dias` vai receber os campos de atividade.
 - **Fase 4:** medidas mensais, % de gordura (com TMB Katch-McArdle, já em `calculos.ts`), fotos, backup de fotos, polimento offline e instalação no iPhone.
 - **Para depois:** importar do Apple Health por Atalho; leitura do código de barras com a câmara.

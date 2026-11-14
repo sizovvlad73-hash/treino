@@ -17,8 +17,8 @@ npm run check    # verificação de tipos
 
 ## Instalar no iPhone
 
-A instalação e o modo offline precisam de HTTPS. Publica a pasta `dist/` num alojamento estático com HTTPS,
-abre o endereço no Safari e escolhe Partilhar → «Adicionar ao ecrã principal».
+A app está publicada em https://sizovvlad73-hash.github.io/treino/ (GitHub Pages). Abre o endereço no Safari e
+escolhe Partilhar → «Adicionar ao ecrã principal». Cada `git push` para `main` publica uma versão nova.
 
 ## Estrutura
 
